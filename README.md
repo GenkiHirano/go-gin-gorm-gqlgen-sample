@@ -1,1 +1,1 @@
-# go-gin-gorm-gqlgen-sample
+# go-twitter-api
