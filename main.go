@@ -1,42 +1,45 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"log"
+	"net/url"
+	"os"
+	"time"
 
 	"github.com/ChimeraCoder/anaconda"
 )
 
-type TwitterAccount struct {
-	AccessToken       string `json:"accessToken"`
-	AccessTokenSecret string `json:"accessTokenSecret"`
-	ConsumerKey       string `json:"consumerKey"`
-	ConsumerSecret    string `json:"consumerSecret"`
+func main() {
+	api := getTwitterApi()
+	v := url.Values{}
+	// トレンドを取得したい地域に日本を指定
+	trendResp, err := api.GetTrendsByPlace(23424856, v)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	t := time.Now()
+
+	fmt.Println(trendResp.AsOf) // 取得実行した時間 (UTC)
+	fmt.Println(trendResp.CreatedAt) // トレンドに含まれる一番古い時期からあるものの日時  (UTC)
+	fmt.Println(trendResp.Locations) // 指定した地域
+	fmt.Println(len(trendResp.Trends)) // トレンドの数
+	fmt.Println(t) // 実行時間 (JST)
+
+	// https://pkg.go.dev/github.com/chimeracoder/anaconda#TrendResponse
+	// https://pkg.go.dev/github.com/chimeracoder/anaconda#Trend
+	for i, v := range trendResp.Trends {
+		ranking := i + 1
+		fmt.Printf("%d %s\n", ranking, v.Name)
+	}
 }
 
-func main() {
-	// Json読み込み
-	raw, error := ioutil.ReadFile("path/to/twitterAccount.json")
-
-	if error != nil {
-		fmt.Println(error.Error())
-		return
-	}
-
-	var twitterAccount TwitterAccount
-
-	// 構造体にセット
-	json.Unmarshal(raw, &twitterAccount)
-
-	// 認証
-	// envファイルに置き換える
-	anaconda.NewTwitterApiWithCredentials("1254473461310713857-2mg3A9L46BXF5cJma3v7Rvq1sIJFEC", "3iq3muHujMiHCMc1TLxiCrFBlfwS7uS61qdRgeDoKach4", "oIOmfUk3qk4CFNVBMMNQmMeN7", "daaKq64kqwDtiKxS8orUSPqjPhmmZFAc3ogC6GjdVnpkLBajr0")
-
-	// 検索
-	// TODO: apiディレクトリにGetSearch実装予定
-	searchResult, _ := api.GetSearch(`"検索キーワード"`, nil)
-	for _, tweet := range searchResult.Statuses {
-		fmt.Println(tweet.Text)
-	}
+func getTwitterApi() *anaconda.TwitterApi {
+	// env実装予定
+	anaconda.SetConsumerKey(os.Getenv("CONSUMER_KEY"))
+	anaconda.SetConsumerSecret(os.Getenv("CONSUMER_SECRET"))
+	return anaconda.NewTwitterApi(os.Getenv("ACCESS_TOKEN"),
+	os.Getenv("ACCESS_TOKEN_SECRET"))
 }
