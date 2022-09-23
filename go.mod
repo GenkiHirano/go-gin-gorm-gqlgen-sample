@@ -2,7 +2,10 @@ module github.com/GenkiHirano/go-twitter-api.git
 
 go 1.19
 
-require github.com/ChimeraCoder/anaconda v2.0.0+incompatible
+require (
+	github.com/ChimeraCoder/anaconda v2.0.0+incompatible
+	github.com/joho/godotenv v1.4.0
+)
 
 require (
 	github.com/ChimeraCoder/tokenbucket v0.0.0-20131201223612-c5a927568de7 // indirect
