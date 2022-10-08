@@ -8,38 +8,31 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type TwitterAccount struct {
-	AccessToken       string `json:"accessToken"`
-	AccessTokenSecret string `json:"accessTokenSecret"`
-	ConsumerKey       string `json:"consumerKey"`
-	ConsumerSecret    string `json:"consumerSecret"`
-}
-
-func main() {
+func loadEnv() {
 	err := godotenv.Load(".env")
 
 	if err != nil {
 		fmt.Printf(".envファイルの読み込みが出来ませんでした: %v", err)
 	}
+}
 
-	twitterAccount := &TwitterAccount{
-		AccessToken:       os.Getenv("ACCESS_TOKEN"),
-		AccessTokenSecret: os.Getenv("ACCESS_TOKEN_SECRET"),
-		ConsumerKey:       os.Getenv("CONSUMER_KEY"),
-		ConsumerSecret:    os.Getenv("CONSUMER_SECRET"),
-	}
+func getTwitterApi() *anaconda.TwitterApi {
+	loadEnv()
+	anaconda.SetConsumerKey(os.Getenv("CONSUMER_KEY"))
+	anaconda.SetConsumerSecret(os.Getenv("CONSUMER_KEY_SECRET"))
+	api := anaconda.NewTwitterApi(os.Getenv("ACCESS_TOKEN"), os.Getenv("ACCESS_TOKEN_SECRET"))
+	return api
+}
 
-	// 認証
-	api := anaconda.NewTwitterApiWithCredentials(twitterAccount.AccessToken, twitterAccount.AccessTokenSecret, twitterAccount.ConsumerKey, twitterAccount.ConsumerSecret)
+func main() {
+	api := getTwitterApi()
+	text := "Test Tweet"
 
-	// 検索
-	searchResult, err := api.GetSearch(`テスト`, nil)
+	tweet, err := api.PostTweet(text, nil)
 
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 
-	for _, tweet := range searchResult.Statuses {
-		fmt.Println(tweet.Text)
-	}
+	fmt.Print(tweet.Text)
 }
