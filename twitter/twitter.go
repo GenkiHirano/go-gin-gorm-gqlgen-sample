@@ -3,7 +3,6 @@ package twitter
 import (
 	"fmt"
 	"net/url"
-	"os"
 	"strconv"
 )
 
@@ -15,7 +14,7 @@ func PostTweet(text string) {
 	tweet, err := api.PostTweet(text, nil)
 
 	if err != nil {
-		panic(err)
+		fmt.Printf("failed to tweet: %v\n", err)
 	}
 
 	fmt.Println(tweet.Text)
@@ -28,7 +27,11 @@ func GetSearch(word string) {
 	funcStart("検索機能")
 	api := getTwitterApi()
 
-	searchResult, _ := api.GetSearch(word, nil)
+	searchResult, err := api.GetSearch(word, nil)
+
+	if err != nil {
+		fmt.Printf("failed to get search: %v\n", err)
+	}
 
 	for _, tweet := range searchResult.Statuses {
 		fmt.Println(tweet.Text)
@@ -49,12 +52,11 @@ func GetHomeTimeline(quantity int) {
 	tweets, err := api.GetHomeTimeline(v)
 
 	if err != nil {
-		fmt.Printf("Error to getHomeTimeline. err:%v\n", err)
-		os.Exit(1)
+		fmt.Printf("failed to get home timeline: %v\n", err)
 	}
 
 	for i, tweet := range tweets {
-		fmt.Printf("%d, TweetName:%v\nTweet:%v\n\n", i, tweet.User.Name, tweet.FullText)
+		fmt.Printf("%d, tweetname:%v\n tweet: %v\n", i, tweet.User.Name, tweet.FullText)
 	}
 
 	funcFinish()
