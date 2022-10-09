@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	twitter.PostTweet("テストツイートです")
-	twitter.GetSearch("テストツイート")
+	twitter.PostTweet("テストです")
+	twitter.GetSearch("Gopherくん")
 	twitter.GetHomeTimeline(50)
 }

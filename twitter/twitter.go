@@ -34,7 +34,7 @@ func GetSearch(word string) {
 	}
 
 	for _, tweet := range searchResult.Statuses {
-		fmt.Println(tweet.Text)
+		fmt.Println(tweet.FullText)
 	}
 
 	funcFinish()
