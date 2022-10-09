@@ -8,7 +8,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func getTwitterApi() *anaconda.TwitterApi {
+func getTwitterAPI() *anaconda.TwitterApi {
 	loadEnv()
 	anaconda.SetConsumerKey(os.Getenv("CONSUMER_KEY"))
 	anaconda.SetConsumerSecret(os.Getenv("CONSUMER_KEY_SECRET"))

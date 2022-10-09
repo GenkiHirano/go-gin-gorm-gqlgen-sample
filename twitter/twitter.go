@@ -9,7 +9,7 @@ import (
 // ツイート機能
 func PostTweet(text string) {
 	funcStart("ツイート機能")
-	api := getTwitterApi()
+	api := getTwitterAPI()
 
 	tweet, err := api.PostTweet(text, nil)
 
@@ -25,7 +25,7 @@ func PostTweet(text string) {
 // 検索機能
 func GetSearch(word string) {
 	funcStart("検索機能")
-	api := getTwitterApi()
+	api := getTwitterAPI()
 
 	searchResult, err := api.GetSearch(word, nil)
 
@@ -43,7 +43,7 @@ func GetSearch(word string) {
 // ホームタイムライン取得機能 (最新ツイートから取得)
 func GetHomeTimeline(quantity int) {
 	funcStart("ホームタイムライン取得機能")
-	api := getTwitterApi()
+	api := getTwitterAPI()
 
 	v := url.Values{}
 	s := strconv.Itoa(quantity)
